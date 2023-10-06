@@ -12,7 +12,7 @@ class UsersController{
     if (in_array(1, $permissions)) {
       $fields = array("id","date","name","email","status","action");
       $url = '?c=Users&a=Data';
-      require_once 'app/components/layout.php';
+      $new = '?c=Users&a=New';
       require_once 'app/components/index.php';
     } else {
       $this->model->redirect();
@@ -22,7 +22,6 @@ class UsersController{
   public function New(){
     require_once "lib/check.php";
     if (in_array(1, $permissions)) {
-      $a = 'Edit';
       require_once 'app/views/users/new.php';
     } else {
       $this->model->redirect();
@@ -48,11 +47,12 @@ class UsersController{
   public function Profile(){
     require_once "lib/check.php";
     if (in_array(1, $permissions) and isset($_REQUEST["id"])){
+      $title = 'Users';
+      $subtitle = 'Profile';
       $filters = "and id = " . $_REQUEST['id'];
       $id = $this->model->get('*','users',$filters);
-      $a = 'Profile';
-      require_once 'app/components/layout.php';
-      require_once 'app/views/users/profile.php';
+      $content = 'app/views/users/profile.php';
+      require_once 'app/components/layout/index.php';
     } else {
       $this->model->redirect();
     }

@@ -1,90 +1,54 @@
-<form id="form" autocomplete="off">
-    <div class="modal-header">
-        <h5 class="modal-title">Nuevo Usuario</b></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-        <div class="card p-2">
-            <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col-sm-3">
-                        <h6 class="mb-0">Nombre</h6>
-                    </div>
-                    <div class="col-sm-9 text-secondary">
-                        <input type="text" class="form-control" name="name" value="<?php echo (isset($id->id) and $a == 'Profile') ? $id->username : '';  ?>" required>
-
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-sm-3">
-                        <h6 class="mb-0">Email</h6>
-                    </div>
-                    <div class="col-sm-9 text-secondary">
-                        <input type="email" class="form-control" name="email" value="<?php echo (isset($id->id) and $a == 'Profile') ? $id->email : ''  ?>" required>
-                    </div>
-                </div>
-                 <!--
-                <div class="row mb-3">
-                    <div class="col-sm-3">
-                        <h6 class="mb-0">Language</h6>
-                    </div>
-                    <div class="col-sm-9 text-secondary">
-                        <select class="form-control" name="lang">
-                            <option value="en" <?php echo (isset($id->id) and $id->lang == 'en') ? 'selected' : '' ?>><?php echo $lang['English'] ?></option>
-                            <option value="es" <?php echo (isset($id->id) and $id->lang == 'es') ? 'selected' : '' ?>><?php echo $lang['Spanish'] ?></option>
-                        </select>
-                    </div>
-                </div>
-
-                -->
-                <input type="hidden" name="lang" value="es">
-                <div class="row mb-3">
-                    <div class="col-sm-3">
-                        <h6 class="mb-0">Contraseña (Alfanumérica, 4 caracteres mínimo)</h6>
-                    </div>
-                    <div class="col-sm-9 text-secondary">
-                        <input type="password" minlength="4" id="newpass" name="newpass" class="form-control" required>
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-sm-3">
-                        <h6 class="mb-0">Confirmación Nueva Contraseña</h6>
-                    </div>
-                    <div class="col-sm-9 text-secondary">
-                        <input type="password" minlength="4" id="cpass" name="cpass" class="form-control" required>
-                    </div>
-                </div>
+<div @click.outside="showModal = false" class="overflow-auto w-[95%] sm:w-[50%] bg-white p-4 rounded-lg shadow-lg z-10">
+    <!-- Close Button (X) in Top-Right Corner -->
+    <button @click="showModal = !showModal" class="absolute top-0 right-0 m-3 text-gray-600 hover:text-gray-800">
+        <i class="ri-close-line text-2xl"></i>
+    </button>
+    <h1 class="text-lg font-semibold mb-4">New</h1>
+    <form id="newForm" class="overflow-y-auto max-h-[600px] p-4">
+        <div x-data="{ selectedOption: '' }" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label for="type" class="block text-gray-600 text-sm mb-1">Type</label>
+                <select x-model="selectedOption" id="type" name="type" class="w-full p-1.5 border border-gray-300 rounded-md focus:ring focus:ring-blue-500 focus:outline-none" required>
+                    <option value="" disabled selected></option>
+                    <option value="Admin">Admin</option>
+                    <option value="User">User</option>
+                </select>
+            </div>
+            <div>
+                <label for="name" class="block text-gray-600 text-sm mb-1">Full Name</label>
+                <input type="text" id="name" name="name" class="w-full p-1.5 border border-gray-300 rounded-md focus:ring focus:ring-blue-500 focus:outline-none" required>
+            </div>
+            <div>
+                <label for="email" class="block text-gray-600 text-sm mb-1">Email Address</label>
+                <input type="email" id="email" name="email" class="w-full p-1.5 border border-gray-300 rounded-md focus:ring focus:ring-blue-500 focus:outline-none" required>
+            </div>
+            <div>
+                <label for="password" class="block text-gray-600 text-sm mb-1">Password</label>
+                <input type="password" id="password" name="password" class="w-full p-1.5 border border-gray-300 rounded-md focus:ring focus:ring-blue-500 focus:outline-none" required>
+            </div>
+            <div>
+                <label for="confirm_password" class="block text-gray-600 text-sm mb-1">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" class="w-full p-1.5 border border-gray-300 rounded-md focus:ring focus:ring-blue-500 focus:outline-none" required>
+            </div>
+            <div x-show="selectedOption === 'User'">
+                <label for="hour" class="block text-gray-600 text-sm mb-1">Hour</label>
+                <input type="number" step="0.01" id="hour" name="hour" class="w-full p-1.5 border border-gray-300 rounded-md focus:ring focus:ring-blue-500 focus:outline-none" x-bind:required="selectedOption === 'User'">
+            </div>
+            <div x-show="selectedOption === 'User'">
+                <label for="overtime" class="block text-gray-600 text-sm mb-1">Overtime</label>
+                <input type="number" step="0.01" id="overtime" name="overtime" class="w-full p-1.5 border border-gray-300 rounded-md focus:ring focus:ring-blue-500 focus:outline-none" x-bind:required="selectedOption === 'User'">
+            </div>
+            <div x-show="selectedOption === 'User'">
+                <label for="payroll" class="block text-gray-600 text-sm mb-1">Payroll</label>
+                <select id="payroll" name="payroll" class="w-full p-1.5 border border-gray-300 rounded-md focus:ring focus:ring-blue-500 focus:outline-none" style="background-color: white;" x-bind:required="selectedOption === 'User'">
+                    <option value="" disabled selected></option>
+                    <option value="ESM-Roldan">ESM-Roldan</option>
+                    <option value="Componeti">Componeti</option>
+                </select>
             </div>
         </div>
-    </div>
-    <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Guardar</button>
-    </div>
-</form>
-
-<script>
-$(document).on('submit', '#form', function(e) {
-    e.stopImmediatePropagation();
-    e.preventDefault();
-    if ($("#type").val() === 'Cliente') {
-        if ($('.btn-info').length < 1) {
-            toastr.error('Seleccione almenos un producto');
-            return
-        }
-    }
-    if (document.getElementById("form").checkValidity()) {
-        $("#loading").show();
-        $.post( "?c=Users&a=Save", $( "#form" ).serialize()).done(function(res) {
-            if (isNaN(res)) {
-                toastr.error(res);
-                $("#loading").hide();
-            } else {
-                window.location = '?c=Users&a=Profile&id='+res;
-            }
-        });
-    }
-});
-</script>
+        <div class="mt-6 flex justify-end">
+            <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition"><i class="ri-save-line"></i> Register</button>
+        </div>
+    </form>
+</div>

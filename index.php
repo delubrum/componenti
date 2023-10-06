@@ -17,33 +17,24 @@ header("Feature-Policy: geolocation 'self';");
 header("Permissions-Policy: autoplay=(self), camera=(), microphone=()");
 
 date_default_timezone_set('America/Bogota');
-
 require 'vendor/autoload.php';
-$dotenv = Dotenv\Dotenv::createUnsafeImmutable('/var/www/html/sipec/'); $dotenv->load();
+$dotenv = Dotenv\Dotenv::createUnsafeImmutable('./'); $dotenv->load();
 require_once 'config/db.php';
-
-$controller = 'home';
-
-// Todo esta lógica hara el papel de un FrontController
+$controller = 'Home';
 if(!isset($_REQUEST['c']))
 {
-    require_once "app/controllers/$controller.controller.php";
-    $controller = ucwords($controller) . 'Controller';
+    require_once "app/controllers/$controller" . "Controller.php";
+    $controller = $controller . 'Controller';
     $controller = new $controller;
     $controller->Index();
 }
 else
 {
-    // Obtenemos el controlador que queremos cargar
-    $controller = strtolower($_REQUEST['c']);
+    $controller = $_REQUEST['c'];
     $accion = isset($_REQUEST['a']) ? $_REQUEST['a'] : 'Index';
-
-    // Instanciamos el controlador
-    require_once "app/controllers/$controller.controller.php";
-    $controller = ucwords($controller) . 'Controller';
+    require_once "app/controllers/$controller" . "Controller.php";
+    $controller = $controller . 'Controller';
     $controller = new $controller;
-
-    // Llama la accion
     if(is_callable(array( $controller, $accion ) )){
         call_user_func( array( $controller, $accion ) );
     }else{

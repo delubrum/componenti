@@ -10,6 +10,7 @@
   <ul 
     class="max-h-64 overflow-y-auto shadow-md shadow-black/5 z-30 max-w-xs w-full bg-white rounded-md border border-gray-100 my-2" 
     style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate3d(-54px, 48px, 0px);"
+    x-cloak
     x-show="isOpen"
     @click.away="isOpen = false"
   >

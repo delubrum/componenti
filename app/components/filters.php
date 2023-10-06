@@ -1,11 +1,6 @@
-<div class="bg-white rounded-lg shadow-md p-4">
+<div class="bg-white rounded-lg shadow-md p-6 mx-10 mt-10">
     <div class="flex justify-between items-center mb-4">
         <h3 class="text-xl font-semibold">Filtros</h3>
-        <div class="space-x-2">
-            <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
-                <i class="fas fa-minus"></i>
-            </button>
-        </div>
     </div>
     
     <form id="filter_form" method="post" autocomplete="off" enctype="multipart/form-data" action="?c=RM&a=Index">
@@ -15,32 +10,6 @@
                     <label class="block text-gray-700 text-sm font-medium">RM:</label>
                     <div class="relative rounded-md shadow-sm">
                         <input type="number" step="1" min="1" class="form-input py-2 px-4 block w-full sm:text-sm sm:leading-5" value="<?php echo !empty($_POST) ? $_POST['id'] : '' ?>" name="id">
-                    </div>
-                </div>
-            </div>
-            <div class="col-span-1 sm:col-span-1">
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-medium">* Cliente:</label>
-                    <div class="relative rounded-md shadow-sm">
-                        <select class="form-select py-2 px-4 block w-full sm:text-sm sm:leading-5" name="clientId" id="client">
-                            <option value=''></option>
-                            <?php foreach ($this->model->list("*","users"," and type = 'Cliente' and status = 1") as $r) { ?>
-                                <option <?php echo (!empty($_REQUEST['clientId']) and $r->id == $_REQUEST['clientId']) ? 'selected' : ''; ?> value='<?php echo $r->id?>'><?php echo $r->company?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="col-span-1 sm:col-span-1">
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-medium">Producto:</label>
-                    <div class="relative rounded-md shadow-sm">
-                        <select class="form-select py-2 px-4 block w-full sm:text-sm sm:leading-5" name="productId">
-                            <option value=''></option>
-                            <?php foreach ($this->model->list("*","products"," and status = 1") as $r) { ?>
-                                <option <?php echo (!empty($_REQUEST['productId']) and $r->id == $_REQUEST['productId']) ? 'selected' : ''; ?> value='<?php echo $r->id?>'><?php echo $r->name?></option>
-                            <?php } ?>
-                        </select>
                     </div>
                 </div>
             </div>
@@ -63,7 +32,7 @@
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-medium">Desde:</label>
                     <div class="relative rounded-md shadow-sm">
-                        <input type="date" class="form-input py-2 px-4 block w-full sm:text-sm sm:leading-5" value="<?php echo !empty($_POST) ? $_POST['from'] : '' ?>" name="from">
+                        <input type="date" onfocus='this.showPicker()' class="form-input py-2 px-4 block w-full sm:text-sm sm:leading-5" value="<?php echo !empty($_POST) ? $_POST['from'] : '' ?>" name="from">
                     </div>
                 </div>
             </div>
@@ -71,7 +40,7 @@
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-medium">Hasta:</label>
                     <div class="relative rounded-md shadow-sm">
-                        <input type="date" class="form-input py-2 px-4 block w-full sm:text-sm sm:leading-5" value="<?php echo !empty($_POST) ? $_POST['to'] : '' ?>" name="to">
+                        <input type="date" onfocus='this.showPicker()' class="form-input py-2 px-4 block w-full sm:text-sm sm:leading-5" value="<?php echo !empty($_POST) ? $_POST['to'] : '' ?>" name="to">
                     </div>
                 </div>
             </div>

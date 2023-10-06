@@ -1,75 +1,28 @@
-<!-- Content Header (Page header) -->
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-12">
-                <h1 class="m-0 text-dark">Perfil</h1>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- /.content-header -->
-<!-- Main content -->
-<div class="content" >
-    <div class="container-fluid">
-		<div class="row">
-			<div class="col-lg-12">
-				<?php require_once 'new.php' ?>
-			</div>
+<div class="mx-2 sm:mx-10 mt-2 sm:mt-4 px-3 sm:px-6 py-3 sm:py-6 bg-white rounded-lg shadow-md">
+	<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+		<div>
+			<label for="name" class="block text-gray-600 text-sm mb-1">Full Name</label>
+			<input type="text" id="name" name="name" class="w-full p-1.5 border border-gray-300 rounded-md focus:ring focus:ring-blue-500 focus:outline-none">
 		</div>
-
-		<?php  if (in_array(1, $permissions)) { ?>
-		<div class="row">
-			<div class="col-sm-12">
-				<div class="card">
-					<div class="card-body">
-						<div class="d-flex flex-column">
-							<div class="mt-3">
-								<h3>Permisos</h3>
-							</div>
-						</div>
-						<form id="userPermissions_form">
-							<div class="row">
-								<div class="col-sm-12 permissions">
-								<?php foreach ($this->model->list('DISTINCT(category)','permissions',' ORDER BY sort,category ASC') as $t) { ?>
-									<div class="mt-3">
-										<h5><?php echo $t->category ?></h5>
-										<hr>
-									</div>
-									<?php foreach ($this->model->list('*','permissions'," and category = '$t->category' ORDER BY sort,name ASC") as $p) { ?>
-									<label class="btn <?php echo (in_array($p->id, json_decode($id->permissions))) ? 'btn-primary' : 'btn-secondary'; ?> permission" data-id="<?php echo $p->id ?>" style="cursor:pointer">
-										<?php echo $p->name ?>										
-									</label>
-									<?php } ?>
-								<?php } ?>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
+		<div>
+			<label for="email" class="block text-gray-600 text-sm mb-1">Email Address</label>
+			<input type="email" id="email" name="email" class="w-full p-1.5 border border-gray-300 rounded-md focus:ring focus:ring-blue-500 focus:outline-none">
 		</div>
-
-		<?php  } ?>
-
+		<div>
+			<label for="hour" class="block text-gray-600 text-sm mb-1">Hour</label>
+			<input type="number" step="0.01" id="hour" name="hour" class="w-full p-1.5 border border-gray-300 rounded-md focus:ring focus:ring-blue-500 focus:outline-none">
+		</div>
+		<div>
+			<label for="overtime" class="block text-gray-600 text-sm mb-1">Overtime</label>
+			<input type="number" step="0.01" id="overtime" name="overtime" class="w-full p-1.5 border border-gray-300 rounded-md focus:ring focus:ring-blue-500 focus:outline-none">
+		</div>
+		<div>
+			<label for="payroll" class="block text-gray-600 text-sm mb-1">Payroll</label>
+			<select id="payroll" name="payroll" class="w-full p-1.5 border border-gray-300 rounded-md focus:ring focus:ring-blue-500 focus:outline-none" style="background-color: white;">
+					<option value="" disabled selected></option>
+					<option value="ESM-Roldan">ESM-Roldan</option>
+					<option value="Componeti">Componeti</option>
+			</select>
+		</div>
 	</div>
 </div>
-
-<?php  if (in_array(1, $permissions)) { ?>
-<script>
-$(document).on('click','.permission', function() {
-	const userId = '<?php echo $id->id ?>';
-	const id = String($(this).data('id')); // Convierte a cadena
-	// if (id != '1') {
-		$(this).toggleClass('btn-primary btn-secondary');
-		const elements = document.querySelectorAll('.permission.btn-primary');
-		const arr = Array.from(elements, item => item.getAttribute('data-id'));
-		const permissions = JSON.stringify(arr);
-		$("#loading").show();
-		$.post('?c=Users&a=SavePermissions', {userId, permissions}, function (data) {
-			location.reload();
-		});
-	// }
-});
-</script>
-<?php } ?>

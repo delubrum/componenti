@@ -32,24 +32,23 @@
 </html>
 
 <script>
-    document.addEventListener('submit', async (e) => {
+document.addEventListener('submit', async (e) => {
     e.preventDefault();
     const loginForm = e.target;
     if (loginForm.checkValidity()) {
         try {
             const formData = new FormData(loginForm);
-            const response = await fetch("?c=Home&a=Login", {
+            const response = await fetch("?c=Home&a=Index", {
                 method: "POST",
                 body: formData,
             });
-
             if (response.ok) {
                 const data = await response.text();
                 if (data.trim() !== 'ok') {
                     toastr.error('Error');
                     console.log('Error');
                 } else {
-                    window.location.href = '?c=Home&a=Index';
+                    window.location.href = '/componenti';
                 }
             }
         } catch (error) {

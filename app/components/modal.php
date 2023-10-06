@@ -1,11 +1,4 @@
-<div id="modal" _="on closeModal add .closing then wait for animationend then remove me">
-	<div class="modal-underlay" _="on click trigger closeModal"></div>
-	<div class="modal-content">
-		<h1>Modal Dialog</h1>
-		This is the modal content.
-		You can put anything here, like text, or a form, or an image.
-		<br>
-		<br>
-		<button _="on click trigger closeModal">Close</button>
-	</div>
+<div id="modalContainer" x-show="showModal" class="mt-4 fixed inset-0 z-50 flex justify-center items-start">
+  <div class="fixed inset-0 bg-black opacity-70"></div>
+  <div id="myModal" class="w-full flex justify-center animate__animated animate__bounceIn"></div>
 </div>
