@@ -3,8 +3,14 @@
     <button id="close" @click="showModal = !showModal" class="absolute top-0 right-0 m-3 text-gray-600 hover:text-gray-800">
         <i class="ri-close-line text-2xl"></i>
     </button>
-    <h1 class="text-lg font-semibold mb-4">New</h1>
-    <form id="newForm" hx-post='?c=Report&a=Save' hx-target="#new" hx-swap="outerHTML" hx-on:htmx:after-request="table.ajax.reload( null, false );document.getElementById('close').click()" class="overflow-y-auto max-h-[600px] p-4">
+    <h1 class="text-lg font-semibold mb-4"><i class="ri-file-add-line text-3xl"></i> New</h1>
+    <form id="newForm" 
+        class="overflow-y-auto max-h-[600px] p-4"
+        hx-post='?c=Report&a=Save' 
+        hx-target="#new" 
+        hx-swap="outerHTML" 
+        hx-on:htmx:after-request="table.ajax.reload( null, false );toastr.success('Success');document.getElementById('close').click()" 
+    >
         <div class="grid grid-cols-1 sm:grid-cols-1 gap-4">
             <div>
                 <label for="projectId" class="block text-gray-600 text-sm mb-1">Project</label>

@@ -62,8 +62,8 @@ class Model {
             $sql = "UPDATE $table 
                 SET $vals 
                 WHERE id = '$id'";
-            $this->pdo->prepare($sql)->execute();
             $this->log($sql);
+            return $this->pdo->prepare($sql)->execute();
         } catch (Exception $e) {
             die($e->getMessage());
         }

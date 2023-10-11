@@ -10,6 +10,7 @@ class HomeController{
 	public function Index() {
 		require_once "lib/auth.php";
 		if ($isLoggedIn) {
+			$notifications = $this->model->list('title,itemId,url,target,permissionId','notifications', "and status = 1");
 			require_once "lib/check.php";
       require_once 'app/components/layout/index.php';
 		} else {
@@ -64,9 +65,14 @@ class HomeController{
 		}
 	}
 
-	public function Test() {
-    echo 1;
-  }
+	public function Notifications() {
+		$notifications = $this->model->list('title,itemId,url,target,permissionId','notifications', "and status = 1");
+		if ($_REQUEST['list'] == 0) {
+			echo count($notifications);
+		} else {
+			require_once "app/components/notifications-list.php";
+		}
+	}
 
   public function Logout() {
     session_start();

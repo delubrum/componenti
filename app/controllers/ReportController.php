@@ -10,7 +10,7 @@ class ReportController{
   public function Index(){
     require_once "lib/check.php";
     if (in_array(3, $permissions)) {
-      $fields = array("date","user","project","reported","action");
+      $fields = array("id","date","user","project","reported","action");
       $url = '?c=Report&a=Data';
       $new = '?c=Report&a=New';
       require_once 'app/components/index.php';
@@ -37,18 +37,22 @@ class ReportController{
       $total = $this->model->get("count(id) as total", "report a")->total;
       $sql = '';
       if (!empty($_POST['search']['value'])) {
-        $sql .= " and (id LIKE '%" . $_POST['search']['value'] . "%'";
+        $sql .= " and (a.id LIKE '%" . $_POST['search']['value'] . "%'";
         $sql .= " OR b.username LIKE '%" . $_POST['search']['value'] . "%'";
+        $sql .= " OR a.hours LIKE '%" . $_POST['search']['value'] . "%'";
         $sql .= " OR c.name LIKE '%" . $_POST['search']['value'] . "%')";
       }
-      $filtered = $this->model->get("count(id) as total", "report a", $sql)->total;
+      $filtered = $this->model->get("count(a.id) as total", "report a",$sql, 'LEFT JOIN users b on a.userId = b.id LEFT JOIN projects c on a.projectId = c.id')->total;
 
       if (!empty($_POST['order'])) {
+        $columns = array("id","date","user","project","reported","action");
         $sql .= " ORDER BY " . $columns[$_POST['order'][0]['column']] . " " . $_POST['order'][0]['dir'];
       }
       $sql .= " LIMIT " . $_POST['start'] . ", " . $_POST['length'];
       foreach ($this->model->list("a.id,a.createdAt as date,b.username as user,concat(c.code,' - ',c.name,' - ',c.scope) as project,a.hours as reported,if(a.status=1,'Enabled','Disabled') as status", "report a",$sql, 'LEFT JOIN users b on a.userId = b.id LEFT JOIN projects c on a.projectId = c.id') as $k => $v) {
-        $b = "<a hx-get='?c=Report&a=Status&id=$v->id&status=1' hx-on:htmx:after-request='table.ajax.reload( null, false );' class='block mx-3 float-right'><i class='ri-check-line cursor-pointer text-blue-500 hover:text-blue-700 text-2xl'></i> </a>";
+        $b = (in_array(4, $permissions)) 
+        ? "<a hx-get='?c=Report&a=Status&id=$v->id&status=1' hx-on:htmx:after-request='table.ajax.reload( null, false );' class='block mx-3 float-right'><i class='ri-check-line cursor-pointer text-blue-500 hover:text-blue-700 text-2xl'></i> </a>"
+        : "";
         $result[] = (array)$v + ['action' => "$b"];
       }
       $json_data = array(
@@ -76,7 +80,14 @@ class ReportController{
         }
       }
       $item->userId = $_SESSION["id-APP"];
-      $this->model->save($table,$item);
+      $id = $this->model->save($table,$item);
+      $notification = new stdClass();
+      $notification->itemId = $id;
+      $notification->permissionId = 4;
+      $notification->title = 'New Report';
+      $notification->url = '?c=Report&a=Index';
+      $notification->target = '#content';
+      $this->model->save('notifications',$notification);
       echo "<h4 class='float-right mr-14 mt-4 text-blue-500'>You have already reported your hours today. Thank you!</h4>";
     } else {
       $this->model->redirect();

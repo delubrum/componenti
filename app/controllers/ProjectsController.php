@@ -10,7 +10,7 @@ class ProjectsController{
   public function Index(){
     require_once "lib/check.php";
     if (in_array(2, $permissions)) {
-      $fields = array("id","code","name","scope","status","action");
+      $fields = array("id","name","status","action");
       $url = '?c=Projects&a=Data';
       $new = '?c=Projects&a=New';
       require_once 'app/components/index.php';
@@ -47,10 +47,11 @@ class ProjectsController{
       }
       $filtered = $this->model->get("count(id) as total","projects",$sql)->total;
       if (!empty($_POST['order'])) {
+        $columns = array("id","name","status","action");
         $sql .= " ORDER BY " . $columns[$_POST['order'][0]['column']] . " " . $_POST['order'][0]['dir'];
       }
       $sql .= " LIMIT " . $_POST['start'] . ", " . $_POST['length'];
-      foreach ($this->model->list("id,code,name,scope,if(status=1,'Enabled','Disabled') as status","projects",$sql) as $k => $v) {
+      foreach ($this->model->list("id,concat(code,' - ',name,' - ',scope) as name,if(status=1,'Enabled','Disabled') as status","projects",$sql) as $k => $v) {
         $b1 = ($v->status != 'Enabled') 
         ? "<a hx-get='?c=Projects&a=Status&id=$v->id&status=1' hx-on:htmx:after-request='table.ajax.reload( null, false );' class='block mx-3 float-right'><i class='ri-toggle-line cursor-pointer text-gray-500 hover:text-gray-700 text-2xl'></i> </a>" 
         : "<a hx-get='?c=Projects&a=Status&id=$v->id&status=0' hx-on:htmx:after-request='table.ajax.reload( null, false );' class='block mx-3 float-right'><i class='ri-toggle-fill text-blue-500 hover:text-blue-700 cursor-pointer text-2xl'></i> </a>";
@@ -72,6 +73,7 @@ class ProjectsController{
   public function Save(){
     require_once "lib/check.php";
     if (in_array(2, $permissions)) {
+      header('Content-Type: application/json');
       $item = new stdClass();
       $table = 'projects';
       foreach($_POST as $k => $val) {
@@ -82,8 +84,18 @@ class ProjectsController{
         }
       }
       empty($_POST['id'])
-      ? $this->model->save($table,$item)
-      : $this->model->update($table,$item,$_POST['id']);
+      ? $id = $this->model->save($table,$item)
+      : $id = $this->model->update($table,$item,$_POST['id']);
+      if ($id !== false) {
+        $response['status'] = 'success';
+        $response['message'] = 'Success';
+        (empty($_POST['id'])) ? $response['id'] = $id : '';
+      } else {
+        http_response_code(500); // Código de estado HTTP Internal Server Error
+        $response['status'] = 'error';
+        $response['message'] = 'Error';
+      }
+      echo json_encode($response);
     } else {
       $this->model->redirect();
     }

@@ -1,7 +1,8 @@
 <?php 
   $today=date("Y-m-d");
   $filter = "and date(createdAt) = '$today' and userId = $user->id";
-  if($url == '?c=Report&a=Data' and empty($this->model->list('id','report',$filter))) {
+  if($url == '?c=Report&a=Data') {
+    if (!$this->model->list('id','report',$filter)) {
 ?>
 <button 
   id="new"
@@ -11,9 +12,19 @@
   @click='showModal = true'>
   <i class="ri-add-line"></i> New
 </button>
-<?php } else {echo "<h4 class='float-right mr-14 mt-4 text-blue-500'>You have already reported your hours today. Thank you!</h4>"; } ?>
+<?php } else {echo "<h4 class='float-right mr-14 mt-4 text-blue-500'>You have already reported your hours today. Thank you!</h4>"; 
+}} else { ?>
+  <button 
+  id="new"
+  class='float-right mr-14 mt-4 bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded'
+  hx-get='<?php echo $new ?>'
+  hx-target="#myModal"
+  @click='showModal = true'>
+  <i class="ri-add-line"></i> New
+</button> 
+<?php } ?>
 
-<div class="mx-2 sm:mx-10 mt-2 sm:mt-4 px-3 sm:px-6 py-3 sm:py-6 bg-white rounded-lg shadow-md">
+<div class="mx-2 sm:mx-10 mt-2 sm:mt-4 px-3 sm:px-6 py-3 sm:py-6 bg-white rounded-lg shadow-xl">
   <table class="w-full display table-striped text-xs sm:text-sm" id="list">
       <thead>
         <tr>
@@ -26,9 +37,8 @@
 </div>
 
 <script>
-
 var table = $('#list').DataTable({
-  order: false,
+  order: [0,'desc'],
   lengthChange : false,
   paginate: true,
   pageLength: 10,
@@ -50,6 +60,11 @@ var table = $('#list').DataTable({
       { "className": "text-right", "targets": [<?php echo count($fields)-1 ?>] },
 
   ],
+  <?php if(isset($_REQUEST['id'])) { ?>
+  search: {
+    "search": '<?php echo $_REQUEST['id'] ?>'
+  },
+  <?php } ?>
   drawCallback: function(settings) {
     htmx.process(document.getElementById('list'));
   }
