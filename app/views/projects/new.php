@@ -1,6 +1,6 @@
 <div @click.outside="showModal = false" class="w-[95%] sm:w-[25%] bg-white p-4 rounded-lg shadow-lg relative z-20">
     <!-- Close Button (X) in Top-Right Corner -->
-    <button @click="showModal = !showModal" class="absolute top-0 right-0 m-3 text-gray-600 hover:text-gray-800">
+    <button @keyup.escape="showModal = !showModal" @click="showModal = !showModal" class="absolute top-0 right-0 m-3 text-gray-600 hover:text-gray-800">
         <i class="ri-close-line text-2xl"></i>
     </button>
     <h1 class="text-lg font-semibold mb-4"><i class="ri-file-add-line text-3xl"></i> New</h1>

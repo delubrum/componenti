@@ -7,7 +7,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Columna 1 - Update Data -->
         <div class="bg-white rounded-lg p-4">
-            <h2 class="text-lg font-semibold mb-4">Update Data</h2>
+            <h2 class="text-lg font-semibold mb-4">Data</h2>
             <form action="tu_script_de_actualización.php" method="POST" class="w-[95%] sm:w-[100%]">
                 <div>
 									<label for="name" class="block text-gray-600 text-sm mb-1">Full Name</label>

@@ -72,6 +72,7 @@ class UsersController{
     if (in_array(1, $permissions) and isset($_REQUEST["id"])){
       $filters = "and id = " . $_REQUEST['id'];
       $id = $this->model->get('*','users',$filters);
+      $userPermissions = json_decode($id->permissions, true);
       require_once 'app/views/users/profile.php';
     } else if (!in_array(1, $permissions) and ($_REQUEST["id"] == $user->id) ){
       $id = $user;
@@ -108,6 +109,7 @@ class UsersController{
       $item->payroll = $_REQUEST['payroll'];
       $item->overtime = $_REQUEST['overtime'];
       $item->hour = $_REQUEST['hour'];
+      $item->permissions = [];
       $cpass = $_REQUEST['cpass'];
       if ($cpass != '' and $cpass != $item->password) {
         http_response_code(400);
@@ -156,20 +158,26 @@ class UsersController{
       $permissions = json_decode($this->model->get('permissions','users',$filters)->permissions);
       if ($action == 0) {
         $newArr = array_filter($permissions, function($value) use ($pId) {
-          return $value !== $pId;
-      });
+          return $value != $pId;
+        });
       } else {
-        $newArr = array_merge($permissions, [$pId]);
+        $newArr = array_merge($permissions, [intval($pId)]);
       }
       $item = new stdClass();
-      $item->permissions = json_encode($newArr);
+      sort($newArr);
+      $item->permissions = json_encode(array_values($newArr));
       $id = $this->model->update('users',$item,$userId);
       $color = (in_array($pId,$newArr)) ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-500 hover:bg-gray-600';
       $action = (in_array($pId,$newArr)) ? '0' : '1';
       echo "<button 
-      hx-post='?c=Users&a=UpdatePermission&userId=$userId&pId=$pId&action=$action&name=$name'
+      hx-put='?c=Users&a=UpdatePermission&userId=$userId&pId=$pId&action=$action&name=$name'
       hx-swap = 'outerHTML'
-      type='submit' class='text-white text-sm py-2 px-4 m-1 rounded-md $color transition'>$name</button>";
+      hx-trigger='click'
+      class='text-white text-sm py-2 px-4 m-1 rounded-md $color transition'>
+        <div hx-get='?c=Home&a=Sidebar' hx-target='#sidebarMenu' hx-trigger='load' hx-swap='innetHtml'>
+          $name
+        </div>
+      </button>";
     }
   }
 

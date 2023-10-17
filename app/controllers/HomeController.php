@@ -70,8 +70,13 @@ class HomeController{
 		if ($_REQUEST['list'] == 0) {
 			echo count($notifications);
 		} else {
-			require_once "app/components/notifications-list.php";
+			require_once "app/components/layout/notifications-list.php";
 		}
+	}
+
+  public function Sidebar() {
+    require_once "lib/check.php";
+		require_once "app/components/layout/sidebar-menu.php";
 	}
 
   public function Logout() {
